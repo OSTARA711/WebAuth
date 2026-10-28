@@ -1,54 +1,136 @@
-# Authenticator [![Build Status](https://travis-ci.com/Authenticator-Extension/Authenticator.svg?branch=dev)](https://travis-ci.com/Authenticator-Extension/Authenticator) [![Crowdin](https://d322cqt584bo4o.cloudfront.net/authenticator-firefox/localized.svg)](https://crowdin.com/project/authenticator-firefox) <img align="right" width="100" height="100" src="https://github.com/Authenticator-Extension/Authenticator/raw/dev/images/icon.svg">
+# WebAuth
 
-> Authenticator generates 2-Step Verification codes in your browser.
+**Browser-based two-factor authentication, with KAMBOS interoperability as the first development priority.**
 
-## Available for Chrome, Firefox, and Microsoft Edge
+WebAuth is an open-source browser extension project based on [Authenticator by Authenticator-Extension](https://github.com/Authenticator-Extension/Authenticator). It is being developed for **Firefox, Google Chrome and Microsoft Edge**, with a long-term focus on integrating browser-based two-factor authentication with [KAMBOS](https://github.com/OSTARA711/kambos), the independent desktop security application.
 
-[<img src="https://raw.githubusercontent.com/wiki/Authenticator-Extension/Authenticator/readme-images/chrome-web-store.png" title="Chrome Web Store" width="170" height="48" />](https://chrome.google.com/webstore/detail/authenticator/bhghoamapcdpbohphigoooaddinpkbai) [<img src="https://raw.githubusercontent.com/wiki/Authenticator-Extension/Authenticator/readme-images/firefox-add-ons.png" title="Firefox Add-ons" width="170" height="48" />](https://addons.mozilla.org/en-US/firefox/addon/auth-helper?src=external-github) [<img src="https://raw.githubusercontent.com/wiki/Authenticator-Extension/Authenticator/readme-images/microsoft-store.png" title="Microsoft Store" height="48">](https://microsoftedge.microsoft.com/addons/detail/ocglkepbibnalbgmbachknglpdipeoio)
+The objective is to make authentication credentials easier to manage across the browser and KAMBOS without making a remote account or cloud service a requirement for the core workflow.
 
+**Project status:** KAMBOS interoperability is a development priority. Until the integration and its security tests are implemented and documented, compatibility with KAMBOS must not be assumed.
 
-### Safari Edition
+## Project goals
 
-A Safari edition of Authenticator is available on the App Store. We do not provide official support for the Safari edition.
+- **Browser authentication:** Maintain and improve the inherited authenticator functionality.
+- **KAMBOS interoperability:** Develop a compatible, encrypted transfer workflow between WebAuth and KAMBOS.
+- **User control:** Prioritise local credential management and user-initiated transfers.
+- **Cross-browser support:** Target Firefox, Chrome and Microsoft Edge.
+- **Open source:** Keep the project available for inspection, modification and community contributions under the applicable licence terms.
 
-[<img width="150" alt="Download on the App Store" src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"/>](https://apps.apple.com/us/app/authen/id1602945200?mt=12)
+## KAMBOS interoperability
 
-## Build Setup
+The first major feature planned for WebAuth is interoperability with KAMBOS.
 
-``` bash
-# install development dependencies
-npm install
-# compile
-npm run [chrome, firefox, prod]
-```
+The intended workflow is to let users transfer their authenticator data between the browser extension and KAMBOS, using a documented and versioned encrypted format.
 
-To reproduce a build:
+The implementation must establish a shared format before the two applications can reliably exchange data. That specification needs to define:
 
-``` bash
-npm ci
-npm run prod
-```
+- The file format and version identifier.
+- The credential payload structure and encoding.
+- Password-based key derivation parameters and salt handling.
+- Encryption algorithm, nonce, authentication tag and associated data, where applicable.
+- Validation and error handling for incorrect passwords, corrupted files and unsupported versions.
+- Safe import and export behaviour, including avoiding partial imports.
+- Compatibility tests using files produced by both applications.
 
-To reproduce a build for Safari, please follow contribution guidance in [Authenticator-Extension/Authen](https://github.com/Authenticator-Extension/Authen#how-to-contribute)
+KAMBOS uses its RINN v2 format, based on Argon2id key derivation and AES-256-GCM authenticated encryption. These algorithm names alone do not establish file-format compatibility. WebAuth and KAMBOS must agree on all relevant parameters and data structures before RINN compatibility can be claimed.
 
-## Development (Chrome)
+**Security principle:** Authentication data should not be exported in plaintext by default. The final implementation should clearly identify any unencrypted export option, if one is supported at all, and explain its risks.
 
-``` bash
-# install development dependencies
-npm install
-# compiles the Chrome extension to the `./test/chrome` directory
-npm run dev:chrome
-# load the unpacked extension from the `./test/chrome/ directory in Chrome
-```
+Until the interoperability feature is implemented and tested, users should continue to treat WebAuth and KAMBOS as separate applications.
 
-Note that Windows users should download a tool like [Git Bash](https://git-scm.com/download/win) or [Cygwin](http://cygwin.com/) to build.
+## Browser support
 
-## Acknowledgment
+WebAuth targets:
 
-We would like to extend our heartfelt thanks to Laurent, the Chief Information Security Officer (CISO) of the University of Luxembourg, for the invaluable support and contribution to this project. During the development process, the CISO team provided critical security recommendations that helped us identify and address potential vulnerabilities, significantly enhancing the security and reliability of the project.
+- Mozilla Firefox
+- Google Chrome
+- Microsoft Edge
 
-We especially want to acknowledge the University of Luxembourg's information security team for their selfless contribution, which not only facilitated the progress of this project but also had a positive impact on the broader open-source community. We recognize that the success of open-source software depends heavily on collaboration and support from various stakeholders, and the involvement of the University of Luxembourg has allowed us to offer a more secure and dependable product to a wider audience.
+The project retains the existing extension build system while the codebase is progressively adapted to the WebAuth identity and roadmap.
 
-We understand that while open-source software is free, maintaining and improving these projects requires significant resources. The University of Luxembourg’s information security team has demonstrated their strong commitment to the open-source community, contributing not just within their university but to users and developers globally. We hope this acknowledgment will help them continue to secure the support and resources necessary to further advance open-source initiatives.
+Browser-store publication, installation instructions and supported browser versions will be documented when the corresponding WebAuth releases are available. The existence of an upstream Authenticator release does not mean that a customised WebAuth release has been published or approved by the original project.
 
-Once again, we express our sincere gratitude to the University of Luxembourg's CISO team for their valuable advice and assistance.
+## Building from source
+
+WebAuth currently uses the inherited Node.js and npm build system.
+
+### Requirements
+
+- Node.js
+- npm
+- Git
+
+### Install dependencies
+
+Clone your WebAuth repository and enter its directory:
+
+    git clone https://github.com/OSTARA711/WebAuth.git
+    cd WebAuth
+    npm ci
+
+### Build for Firefox
+
+    npm run firefox
+
+### Build for Chrome
+
+    npm run chrome
+
+### Build for Microsoft Edge
+
+    npm run edge
+
+### Production build
+
+    npm run prod
+
+### Tests
+
+    npm test
+
+These commands use the build scripts currently defined by the inherited project. Their output locations and behaviour should be verified against the current build scripts before packaging or distributing a WebAuth release.
+
+## Development priorities
+
+Development will proceed incrementally, with interoperability taking priority over unnecessary architectural changes.
+
+1. **Establish WebAuth identity:** Update project metadata, extension branding, documentation and relevant links.
+2. **Verify the inherited functionality:** Review authentication, credential storage, import/export and browser compatibility.
+3. **Specify the interoperability format:** Agree on the format and cryptographic parameters shared with KAMBOS.
+4. **Implement encrypted transfer:** Add explicit import and export workflows with strict validation.
+5. **Test interoperability:** Verify compatibility, corruption handling, wrong-password handling and failure recovery.
+6. **Prepare releases:** Document supported browsers, installation, known limitations and security-relevant changes.
+
+## Security and responsible use
+
+Two-factor authentication protects accounts only when the authenticator and its stored credentials are handled appropriately.
+
+Users should:
+
+- Protect exported authentication data as sensitive information.
+- Store recovery codes separately from their authenticator data.
+- Keep backup files secure and remove temporary copies when they are no longer needed.
+- Verify the origin and legitimacy of websites before entering authentication codes.
+- Report suspected vulnerabilities privately to the project maintainer where an appropriate reporting channel is available.
+
+WebAuth is under active development. This README does not constitute a security audit or a guarantee that the inherited codebase is free of vulnerabilities. Review the source and relevant dependency advisories before relying on a build for important accounts.
+
+## Licence and attribution
+
+WebAuth is based on the MIT-licensed [Authenticator project](https://github.com/Authenticator-Extension/Authenticator).
+
+The original project licence and copyright notices must be retained as required by the MIT licence. New WebAuth contributions and branding may be developed independently, subject to the applicable licences and rights of third parties.
+
+See [`LICENSE`](LICENSE) for the licence included in this repository.
+
+WebAuth is an independent project. It is not an official release of the original Authenticator project, and no endorsement by the original maintainers is implied.
+
+## Related project
+
+- [KAMBOS — desktop security application](https://github.com/OSTARA711/kambos)
+
+## Contributing
+
+Contributions are welcome, particularly in the areas of browser compatibility, credential handling, encrypted import/export, interoperability testing and documentation.
+
+Before proposing cryptographic or credential-format changes, document the intended behaviour and compatibility implications. Security-sensitive changes should include reproducible tests and should not silently change an established file format.
