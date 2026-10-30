@@ -1,3 +1,5 @@
+/* Path: src/models/otp.ts */
+
 import { KeyUtilities } from "./key-utilities";
 import { UserSettings } from "./settings";
 import { EntryStorage } from "./storage";
@@ -20,31 +22,12 @@ export enum OTPAlgorithm {
   SHA1 = 1,
   SHA256,
   SHA512,
-  GOST3411_2012_256,
-  GOST3411_2012_512,
 }
 
 export enum DataType {
   OTPStorage = "OTPStorage",
   EncOTPStorage = "EncOTPStorage",
   Key = "Key",
-}
-
-export interface OTPAlgorithmSpec {
-  length: number;
-}
-
-export class OTPUtil {
-  static getOTPAlgorithmSpec(otpAlgorithm: OTPAlgorithm): OTPAlgorithmSpec {
-    switch (otpAlgorithm) {
-      case OTPAlgorithm.GOST3411_2012_256:
-        return { length: 256 };
-      case OTPAlgorithm.GOST3411_2012_512:
-        return { length: 512 };
-      default:
-        return { length: 0 };
-    }
-  }
 }
 
 export class OTPEntry implements OTPEntryInterface {
@@ -118,46 +101,55 @@ export class OTPEntry implements OTPEntryInterface {
     }
 
     this.type = entry.type;
+
     if (entry.issuer) {
       this.issuer = entry.issuer;
     } else {
       this.issuer = "";
     }
+
     if (entry.account) {
       this.account = entry.account;
     } else {
       this.account = "";
     }
+
     if (entry.hash) {
       this.hash = entry.hash;
     } else {
       this.hash = crypto.randomUUID();
     }
+
     if (entry.counter) {
       this.counter = entry.counter;
     } else {
       this.counter = 0;
     }
+
     if (entry.digits) {
       this.digits = entry.digits;
     } else {
       this.digits = 6;
     }
+
     if (entry.algorithm) {
       this.algorithm = entry.algorithm;
     } else {
       this.algorithm = OTPAlgorithm.SHA1;
     }
+
     if (entry.pinned) {
       this.pinned = entry.pinned;
     } else {
       this.pinned = false;
     }
+
     if (this.type === OTPType.totp && entry.period) {
       this.period = entry.period;
     } else {
       this.period = 30;
     }
+
     if (this.type !== OTPType.hotp && this.type !== OTPType.hhex) {
       this.generate();
     }
@@ -188,16 +180,19 @@ export class OTPEntry implements OTPEntryInterface {
     }
 
     if (this.encSecret) {
-      // v2 encryption
+      // v2 encryption backwards compat logic
       this.secret = encryption.decryptSecretString(this.encSecret);
+
       if (this.secret) {
         this.encSecret = "";
       }
+
       return;
     }
 
     // check if its a rawotpstorage
     const decryptedData = encryption.decryptEncSecret(this);
+
     if (decryptedData === null) {
       return;
     }
@@ -215,14 +210,17 @@ export class OTPEntry implements OTPEntryInterface {
     }
 
     this.account = decryptedData.account || "";
+
     // @ts-expect-error need a better way to do this
     this.algorithm = OTPAlgorithm[decryptedData.algorithm] || OTPAlgorithm.SHA1;
+
     this.counter = decryptedData.counter || 0;
     this.digits = decryptedData.digits || 6;
     this.issuer = decryptedData.issuer || "";
     this.period = decryptedData.period || 30;
     this.pinned = decryptedData.pinned || false;
     this.secret = decryptedData.secret;
+
     // @ts-expect-error need a better way to do this
     this.type = OTPType[decryptedData.type] || OTPType.totp;
 
@@ -243,11 +241,14 @@ export class OTPEntry implements OTPEntryInterface {
     if (this.type !== OTPType.hotp && this.type !== OTPType.hhex) {
       return;
     }
+
     this.generate();
+
     if (this.secret !== null) {
       this.counter++;
       await this.update();
     }
+
     return;
   }
 
@@ -257,6 +258,7 @@ export class OTPEntry implements OTPEntryInterface {
 
   generate() {
     const offset = UserSettings.items ? UserSettings.items.offset : 0;
+
     if (!UserSettings.items) {
       // browser storage is async, so we need to wait for it to load
       // and re-generate the code

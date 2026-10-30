@@ -1,14 +1,14 @@
 {
   "extName": {
-    "message": "Authenticator",
+    "message": "ALESIA",
     "description": "Extension Name."
   },
   "extShortName": {
-    "message": "Authenticator",
+    "message": "ALESIA",
     "description": "Extension Short Name."
   },
   "extDesc": {
-    "message": "Authenticator generates two-factor authentication codes in your browser.",
+    "message": "ALESIA generates two-factor authentication codes in your browser.",
     "description": "Extension Description."
   },
   "added": {
@@ -120,10 +120,10 @@
     "description": "Message that user is required to acknowledge before clearing all data."
   },
   "delete_all": {
-    "message": "Reset Authenticator"
+    "message": "Reset ALESIA"
   },
   "delete_all_warning": {
-    "message": "This will delete all of your data and completely reset Authenticator. You will not be able to recover any deleted data! You should consider saving a backup before resetting Authenticator."
+    "message": "This will delete all of your data and completely reset ALESIA. You will not be able to recover any deleted data! You should consider saving a backup before resetting ALESIA."
   },
   "security_warning": {
     "message": "This password will be used to encrypt your accounts. No one can help you if you forget the password.",

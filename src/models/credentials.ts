@@ -1,15 +1,23 @@
+// Path: src/models/credentials.ts
+
+/**
+ * OAuth client identifiers for optional cloud storage integrations.
+ *
+ * These are public client identifiers, not secrets.
+ * Browser extensions must not contain OAuth client secrets.
+ *
+ * Use authorisation-code flows with PKCE for cloud authentication.
+ */
 export function getCredentials() {
   return {
     drive: {
-      client_id: "", // Google client ID
-      client_secret: "", // Google client secret
+      client_id: "", // Google OAuth client ID
     },
     dropbox: {
-      client_id: "", // Dropbox client ID
+      client_id: "", // Dropbox app key
     },
     onedrive: {
-      client_id: "", // Microsoft Identity client ID
-      client_secret: "", // Microsoft Identity client secret
+      client_id: "", // Microsoft Identity application client ID
     },
   };
 }

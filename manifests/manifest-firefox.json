@@ -1,13 +1,13 @@
 {
   "manifest_version": 3,
-  "name": "__MSG_extName__",
-  "short_name": "__MSG_extShortName__",
+  "name": "ALESIA",
+  "short_name": "ALESIA",
   "version": "8.0.2",
   "default_locale": "en",
   "description": "__MSG_extDesc__",
   "browser_specific_settings": {
     "gecko": {
-      "id": "authenticator@mymindstorm",
+      "id": "alesia@ostara.work",
       "strict_min_version": "126.0"
     }
   },
@@ -21,11 +21,13 @@
       "19": "images/icon19.png",
       "38": "images/icon38.png"
     },
-    "default_title": "__MSG_extShortName__",
+    "default_title": "ALESIA",
     "default_popup": "view/popup.html"
   },
   "background": {
-    "scripts": ["dist/background.js"]
+    "scripts": [
+      "dist/background.js"
+    ]
   },
   "commands": {
     "_execute_action": {},
@@ -40,15 +42,23 @@
     "page": "view/options.html",
     "open_in_tab": false
   },
-  "permissions": ["activeTab", "storage", "identity", "alarms", "scripting"],
-  "optional_permissions": ["clipboardWrite"],
-  "host_permissions": [
-    "https://www.google.com/",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "identity",
+    "alarms",
+    "scripting"
+  ],
+  "optional_permissions": [
+    "clipboardWrite"
+  ],
+  "optional_host_permissions": [
+    "https://www.google.com/*",
     "https://*.dropboxapi.com/*",
     "https://www.googleapis.com/*",
-    "https://accounts.google.com/o/oauth2/revoke",
-    "https://graph.microsoft.com/me/*",
-    "https://login.microsoftonline.com/common/oauth2/v2.0/token"
+    "https://accounts.google.com/*",
+    "https://graph.microsoft.com/*",
+    "https://login.microsoftonline.com/*"
   ],
   "content_security_policy": {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; font-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; connect-src https://www.google.com/ https://*.dropboxapi.com https://www.googleapis.com/ https://accounts.google.com/o/oauth2/revoke https://login.microsoftonline.com/common/oauth2/v2.0/token https://graph.microsoft.com/; default-src 'none'"

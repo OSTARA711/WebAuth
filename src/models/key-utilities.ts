@@ -1,10 +1,7 @@
-import { OTPType, OTPAlgorithm, OTPUtil } from "./otp";
+/* Path: src/models/key-utilities.ts */
+
+import { OTPType, OTPAlgorithm } from "./otp";
 import * as CryptoJS from "crypto-js";
-import {
-  gostEngine as GostEngine,
-  GostDigest,
-  AlgorithmIndentifier,
-} from "node-gost-crypto";
 
 // Originally based on the JavaScript implementation as provided by Russell
 // Sayers on his Tin Isles blog:
@@ -60,6 +57,7 @@ export class KeyUtilities {
     // if (hex.length % 2 && hex[hex.length - 1] === '0') {
     //   hex = hex.substr(0, hex.length - 1);
     // }
+
     switch (padding) {
       case 0:
         break;
@@ -86,36 +84,17 @@ export class KeyUtilities {
     const chars = "23456789BCDFGHJKMNPQRTVWXY";
     let output = "";
     const len = 5;
+
     for (let i = 0; i < len; i++) {
       output += chars[num % chars.length];
       num = Math.floor(num / chars.length);
     }
+
     if (output.length < len) {
       output = new Array(len - output.length + 1).join(chars[0]) + output;
     }
-    return output;
-  }
 
-  private static cryptoJsWordArrayToUint8Array(
-    wordArray: CryptoJS.lib.WordArray
-  ) {
-    const l = wordArray.sigBytes;
-    const words = wordArray.words;
-    const result = new Uint8Array(l);
-    let i = 0 /*dst*/,
-      j = 0; /*src*/
-    while (i < l) {
-      // here i is a multiple of 4
-      const w = words[j++];
-      result[i++] = (w & 0xff000000) >>> 24;
-      if (i === l) break;
-      result[i++] = (w & 0x00ff0000) >>> 16;
-      if (i === l) break;
-      result[i++] = (w & 0x0000ff00) >>> 8;
-      if (i === l) break;
-      result[i++] = w & 0x000000ff;
-    }
-    return result;
+    return output;
   }
 
   static generate(
@@ -128,29 +107,36 @@ export class KeyUtilities {
     clockOffset?: number
   ) {
     secret = secret.replace(/\s/g, "");
+
     if (!len) {
       len = 6;
     }
+
     let b26 = false;
     let key: string;
+
     switch (type) {
       case OTPType.totp:
       case OTPType.hotp:
         key = this.base32tohex(secret);
         break;
+
       case OTPType.hex:
       case OTPType.hhex:
         key = secret;
         break;
+
       case OTPType.battle:
         key = this.base32tohex(secret);
         len = 8;
         break;
+
       case OTPType.steam:
         key = this.base32tohex(secret);
         len = 10;
         b26 = true;
         break;
+
       default:
         key = this.base32tohex(secret);
     }
@@ -161,9 +147,11 @@ export class KeyUtilities {
 
     if (type !== OTPType.hotp && type !== OTPType.hhex) {
       let epoch = Math.round(new Date().getTime() / 1000.0);
+
       if (clockOffset) {
         epoch = epoch + Number(clockOffset);
       }
+
       counter = Math.floor(epoch / period);
     }
 
@@ -177,10 +165,8 @@ export class KeyUtilities {
       }
     }
 
-    let alg: AlgorithmIndentifier;
-    let gostCipher: GostDigest;
-
     let hmacObj: CryptoJS.lib.WordArray;
+
     switch (algorithm) {
       case OTPAlgorithm.SHA256:
         hmacObj = CryptoJS.HmacSHA256(
@@ -188,28 +174,15 @@ export class KeyUtilities {
           CryptoJS.enc.Hex.parse(key)
         );
         break;
+
       case OTPAlgorithm.SHA512:
         hmacObj = CryptoJS.HmacSHA512(
           CryptoJS.enc.Hex.parse(time),
           CryptoJS.enc.Hex.parse(key)
         );
         break;
-      case OTPAlgorithm.GOST3411_2012_256:
-      case OTPAlgorithm.GOST3411_2012_512:
-        alg = {
-          mode: "HMAC",
-          name: "GOST R 34.11",
-          version: 2012,
-          length: OTPUtil.getOTPAlgorithmSpec(algorithm).length,
-        };
-        gostCipher = GostEngine.getGostDigest(alg);
-        hmacObj = CryptoJS.lib.WordArray.create(
-          gostCipher.sign(
-            this.cryptoJsWordArrayToUint8Array(CryptoJS.enc.Hex.parse(key)),
-            this.cryptoJsWordArrayToUint8Array(CryptoJS.enc.Hex.parse(time))
-          )
-        );
-        break;
+
+      case OTPAlgorithm.SHA1:
       default:
         hmacObj = CryptoJS.HmacSHA1(
           CryptoJS.enc.Hex.parse(time),
@@ -233,6 +206,7 @@ export class KeyUtilities {
     if (otp.length < len) {
       otp = new Array(len - otp.length + 1).join("0") + otp;
     }
+
     return otp.substr(otp.length - len, len).toString();
   }
 }
