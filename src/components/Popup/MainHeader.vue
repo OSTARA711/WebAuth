@@ -1,3 +1,5 @@
+<!-- Path: ~/WebAuth/src/components/Popup/MainHeader.vue -->
+
 <template>
   <div class="header">
     <span v-on:dblclick="popOut()">{{ i18n.extName }}</span>
@@ -31,18 +33,6 @@
       </div>
       <div
         class="icon"
-        id="i-sync"
-        v-bind:style="{
-          left: !!defaultEncryption ? '70px' : '45px',
-        }"
-        v-show="
-          (dropboxToken || driveToken || oneDriveToken) && !style.isEditing
-        "
-      >
-        <IconSync />
-      </div>
-      <div
-        class="icon"
         id="i-qr"
         v-bind:title="i18n.add_qr"
         v-show="!style.isEditing"
@@ -71,6 +61,7 @@
     </div>
   </div>
 </template>
+
 <script lang="ts">
 import Vue from "vue";
 import { mapState } from "vuex";
@@ -79,7 +70,6 @@ import { getCurrentTab, okToInjectContentScript } from "../../utils";
 // Icons
 import IconCog from "../../../svg/cog.svg";
 import IconLock from "../../../svg/lock.svg";
-import IconSync from "../../../svg/sync.svg";
 import IconScan from "../../../svg/scan.svg";
 import IconPencil from "../../../svg/pencil.svg";
 import IconCheck from "../../../svg/check.svg";
@@ -89,7 +79,6 @@ import { isFirefox } from "../../browser";
 const computedPrototype = [
   mapState("style", ["style"]),
   mapState("accounts", ["defaultEncryption"]),
-  mapState("backup", ["driveToken", "dropboxToken", "oneDriveToken"]),
 ];
 
 let computed = {};
@@ -196,7 +185,6 @@ export default Vue.extend({
   components: {
     IconCog,
     IconLock,
-    IconSync,
     IconScan,
     IconPencil,
     IconCheck,

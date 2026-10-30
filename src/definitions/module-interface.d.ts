@@ -1,3 +1,5 @@
+// Path: src/definitions/module-interface.d.ts
+
 /* eslint-disable @typescript-eslint/ban-types */
 interface Module {
   getModule(): Promise<VuexConstructor> | VuexConstructor;
@@ -37,7 +39,6 @@ interface MenuState {
   smartFilter: boolean;
   enableContextMenu: boolean;
   theme: string;
-  backupDisabled: boolean;
   storageArea: "sync" | "local";
 }
 
@@ -83,15 +84,6 @@ interface NotificationState {
   confirmMessage: string;
   messageIdle: boolean;
   notification: string;
-}
-
-interface BackupState {
-  dropboxEncrypted: boolean;
-  driveEncrypted: boolean;
-  oneDriveEncrypted: boolean;
-  dropboxToken: boolean;
-  driveToken: boolean;
-  oneDriveToken: boolean;
 }
 
 interface AdvisorState {

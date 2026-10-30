@@ -1,23 +1,17 @@
 // Path: src/models/credentials.ts
 
 /**
- * OAuth client identifiers for optional cloud storage integrations.
+ * ALESIA does not currently require embedded OAuth credentials.
  *
- * These are public client identifiers, not secrets.
- * Browser extensions must not contain OAuth client secrets.
+ * Cloud storage integrations are intentionally excluded from the
+ * initial implementation.
  *
- * Use authorisation-code flows with PKCE for cloud authentication.
+ * If optional cloud integrations are introduced later, they must use:
+ * - Public OAuth client identifiers only.
+ * - Authorisation Code Flow with PKCE.
+ * - No embedded client secrets.
+ *
+ * Cloud storage must handle opaque encrypted .RINN files only.
  */
-export function getCredentials() {
-  return {
-    drive: {
-      client_id: "", // Google OAuth client ID
-    },
-    dropbox: {
-      client_id: "", // Dropbox app key
-    },
-    onedrive: {
-      client_id: "", // Microsoft Identity application client ID
-    },
-  };
-}
+
+export {};
